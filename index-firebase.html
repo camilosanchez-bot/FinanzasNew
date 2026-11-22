@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Money-Flow</title>
+<style>
+:root{--bg:#070b14;--card:rgba(255,255,255,.04);--line:rgba(120,255,214,.16);--g:#00f5a0;--c:#00c8ff;--t:#e8eef5;--m:#7f8ea3;--r:#ff5a6e;--o:#ffb84d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--t);min-height:100vh;background:radial-gradient(900px 500px at 85% -10%,rgba(0,200,255,.13),transparent),radial-gradient(800px 500px at -10% 5%,rgba(0,245,160,.10),transparent),var(--bg);background-attachment:fixed}
+.w{max-width:960px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.25rem}
+.logo{font-weight:700;font-size:1.15rem;letter-spacing:.02em}.logo i{font-style:normal;color:var(--g)}
+.sync{font-size:.78rem;color:var(--m)}.sync b{color:var(--g);font-weight:500}
+nav{display:flex;gap:.4rem;overflow-x:auto;margin-bottom:1.5rem;padding-bottom:.25rem}
+nav button{flex:1;min-width:92px;background:none;border:1px solid var(--line);color:var(--m);padding:.65rem .9rem;border-radius:10px;font:inherit;font-size:.9rem;cursor:pointer;transition:.2s}
+nav button:hover{color:var(--t);border-color:var(--g)}
+nav button.on{color:var(--g);border-color:var(--g);background:rgba(0,245,160,.08)}
+.hero{border:1px solid var(--line);border-radius:18px;padding:2rem 1.5rem;margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(0,245,160,.07),rgba(0,200,255,.05))}
+.hero small{color:var(--m);font-size:.9rem}
+.big{font-size:clamp(2.6rem,9vw,4.2rem);font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums;background:linear-gradient(90deg,var(--g),var(--c));-webkit-background-clip:text;background-clip:text;color:transparent;margin:.25rem 0}
+.hero p{color:var(--m);font-size:.92rem;line-height:1.5;max-width:60ch}
+.card{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:1.4rem;margin-bottom:1.25rem}
+h2{font-size:1.05rem;font-weight:600;margin-bottom:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-bottom:1.25rem}
+.stat{border:1px solid var(--line);border-radius:12px;padding:1rem}
+.stat span{display:block;color:var(--m);font-size:.8rem;margin-bottom:.35rem}.stat b{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.bar{margin-bottom:1.2rem}.bar .h{display:flex;justify-content:space-between;font-size:.92rem;margin-bottom:.45rem}
+.bar .h b{font-variant-numeric:tabular-nums}.bar .s{font-size:.78rem;color:var(--m);margin-top:.35rem}
+.track{height:10px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.fill{height:100%;border-radius:99px;transition:width .6s ease}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem}
+label{display:flex;flex-direction:column;gap:.4rem;font-size:.85rem;color:var(--m)}
+input,select{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--t);border-radius:10px;padding:.7rem .8rem;font:inherit;font-size:.95rem;width:100%}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--g);outline-offset:1px}
+option{background:#0d1424}
+.btn{background:linear-gradient(90deg,var(--g),var(--c));color:#04120d;border:0;border-radius:10px;padding:.8rem 1.4rem;font:inherit;font-weight:600;cursor:pointer}
+.btn.o{background:none;color:var(--t);border:1px solid var(--line)}.btn.o:hover{border-color:var(--g)}
+.btn.d{background:none;color:var(--r);border:1px solid rgba(255,90,110,.35);padding:.4rem .8rem;font-size:.8rem;font-weight:500}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+.it{border-left:3px solid var(--g);background:rgba(255,255,255,.03);border-radius:10px;padding:.9rem 1rem;margin-bottom:.7rem;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+.it .a{font-weight:600;color:var(--g);font-variant-numeric:tabular-nums;white-space:nowrap}
+.it .m{font-size:.8rem;color:var(--m);margin-top:.25rem;line-height:1.5}
+.tag{display:inline-block;font-size:.72rem;padding:.15rem .6rem;border-radius:99px;border:1px solid currentColor;margin-top:.4rem}
+.note{border-left:3px solid var(--c);background:rgba(0,200,255,.06);border-radius:10px;padding:.9rem 1rem;font-size:.9rem;line-height:1.5;margin-bottom:1rem}
+.err{color:var(--r);font-size:.88rem;margin-top:1rem}
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;position:relative;margin:1rem 0 .4rem}
+.chart i{flex:1;background:linear-gradient(var(--c),var(--g));border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.chart u{position:absolute;left:0;right:0;border-top:1px dashed var(--o)}
+.legend{font-size:.78rem;color:var(--m);display:flex;justify-content:space-between}
+.login{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem}
+.login h1{font-size:2.4rem}.login p{color:var(--m);max-width:38ch;line-height:1.5}
+table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{padding:.6rem .4rem;border-bottom:1px solid var(--line);text-align:left}th{color:var(--m);font-weight:500;font-size:.8rem}td:last-child,th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="w" id="app"></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,onSnapshot,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyD8W6QrDo0cQ5D0qu_2Sh4aSTLH1GSsJWk",authDomain:"moneyflow-app-6fd1b.firebaseapp.com",projectId:"moneyflow-app-6fd1b",storageBucket:"moneyflow-app-6fd1b.firebasestorage.app",messagingSenderId:"544549520469",appId:"1:544549520469:web:6b071d438cc37ee2a400dc"};
+const fb=initializeApp(firebaseConfig),auth=getAuth(fb),db=getFirestore(fb);
+
+const DEF={name:'',expense:3500000,years:15,capital:5000000,contrib:1000000,ret:8,inf:4,months:6,golden:0};
+const FUND={imprevistos:{n:'Fondo de imprevistos',c:'#ff5a6e'},oxigeno:{n:'Reserva de oxígeno',c:'#ffb84d'},retiro:{n:'Cuenta de retiro',c:'#00f5a0'}};
+let S=null,view='login',ref=null,unsub=null,msg='',ready=false;
+
+const money=n=>'$'+Math.round(n||0).toLocaleString('es-CO');
+const M=n=>'$'+((n||0)/1e6).toFixed(1)+'M';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=id=>parseFloat(document.getElementById(id).value)||0;
+const val=id=>document.getElementById(id).value.trim();
+
+function legacy(){try{
+  const a=JSON.parse(localStorage.getItem('moneyflow_profile')||'null'),i=JSON.parse(localStorage.getItem('moneyflow_investments')||'null');
+  if(!a&&!i)return null;const p={...DEF};
+  if(a)Object.assign(p,{name:a.name||'',expense:a.monthlyExpense||p.expense,years:a.yearsToRetirement||p.years,capital:(a.initialCapital||0)+(a.currentPatrimony||0),ret:a.expectedReturn??p.ret,inf:a.inflation??p.inf});
+  return {p,inv:i||[],ready:!!a};
+}catch(e){return null}}
+
+function save(){if(ref)setDoc(ref,S).catch(e=>{msg='No se pudo guardar: '+e.message;render()})}
+
+function golden(){const p=S.p;if(p.golden>0)return p.golden;
+  return Math.round(p.expense*Math.pow(1+p.inf/100,p.years)*12*30/Math.pow(1+p.ret/100,p.years))}
+function project(){const p=S.p,r=Math.pow(1+p.ret/100,1/12)-1;let b=p.capital,c=p.contrib;const o=[{y:0,b}];
+  for(let m=1;m<=p.years*12;m++){b=b*(1+r)+c;if(m%12===0){o.push({y:m/12,b});c*=1+p.inf/100}}return o}
+const sumFund=f=>S.inv.filter(i=>i.fund===f).reduce((s,i)=>s+i.amount,0);
+function targets(){const p=S.p;return{imprevistos:p.expense,oxigeno:p.expense*p.months,retiro:golden()}}
+function current(){return{imprevistos:sumFund('imprevistos'),oxigeno:sumFund('oxigeno'),retiro:sumFund('retiro')+S.p.capital}}
+const pct=(a,b)=>b>0?Math.min(100,Math.round(a/b*100)):0;
+
+function bar(label,cur,tgt,color){const x=pct(cur,tgt);
+  return `<div class="bar"><div class="h"><span>${label}</span><b style="color:${color}">${x}%</b></div><div class="track"><div class="fill" style="width:${x}%;background:${color}"></div></div><div class="s">${money(cur)} de ${money(tgt)}</div></div>`}
+
+function vHome(){
+  const g=golden(),T=targets(),C=current(),pr=project(),last=pr[pr.length-1],tot=C.imprevistos+C.oxigeno+C.retiro;
+  const hit=pr.find(x=>x.b>=g);
+  const verdict=hit?`Con tu aporte actual llegas a tu número dorado en el año ${hit.y}.`:`Con tu aporte actual no lo alcanzas en ${S.p.years} años: te faltarían ${money(g-last.b)}. Prueba subir el aporte mensual.`;
+  return `<div class="hero"><small>Tu número dorado</small><div class="big">${money(g)}</div><p>${verdict}</p></div>
+  <div class="grid"><div class="stat"><span>Años para el retiro</span><b>${S.p.years}</b></div><div class="stat"><span>Aporte mensual</span><b>${M(S.p.contrib)}</b></div><div class="stat"><span>Total registrado</span><b>${M(tot)}</b></div><div class="stat"><span>Proyectado al año ${S.p.years}</span><b>${M(last.b)}</b></div></div>
+  <div class="card"><h2>Avance de tus fondos</h2>
+  ${bar(FUND.imprevistos.n+' (1 mes de gastos)',C.imprevistos,T.imprevistos,FUND.imprevistos.c)}
+  ${bar(FUND.oxigeno.n+` (${S.p.months} meses de gastos)`,C.oxigeno,T.oxigeno,FUND.oxigeno.c)}
+  ${bar(FUND.retiro.n+' (número dorado)',C.retiro,T.retiro,FUND.retiro.c)}</div>`}
+
+function vInv(){
+  const today=new Date().toISOString().slice(0,10);
+  const list=[...S.inv].sort((a,b)=>b.date.localeCompare(a.date));
+  const by={};S.inv.forEach(i=>{const k=(i.bank||'Sin entidad')+'|'+i.fund;by[k]=(by[k]||0)+i.amount});
+  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{const [b,f]=k.split('|');return `<tr><td>${esc(b)}</td><td>${FUND[f].n}</td><td>${money(v)}</td></tr>`}).join('');
+  return `<div class="card"><h2>Registrar un aporte</h2><div class="f">
+  <label>Fecha<input type="date" id="d" value="${today}"></label>
+  <label>Fondo<select id="f"><option value="imprevistos">Fondo de imprevistos</option><option value="oxigeno">Reserva de oxígeno</option><option value="retiro">Cuenta de retiro</option></select></label>
+  <label>Banco o entidad<input id="b" placeholder="Ej: Bancolombia, Nu, fiduciaria"></label>
+  <label>Producto<input id="e" placeholder="Ej: CDT, cuenta de alta rentabilidad"></label>
+  <label>Monto (COP)<input type="number" id="a" inputmode="numeric" placeholder="500000"></label>
+  <label>Referencia o nota<input id="n" placeholder="Opcional"></label></div>
+  <div class="row" style="margin-top:1rem"><button class="btn" onclick="A.add()">Guardar aporte</button></div>${msg?`<div class="err">${esc(msg)}</div>`:''}</div>
+  <div class="card"><h2>Dónde está tu dinero</h2>${rows?`<table><tr><th>Entidad</th><th>Fondo</th><th>Total</th></tr>${rows}</table>`:'<p class="s" style="color:var(--m)">Aún no hay aportes. Registra el primero arriba.</p>'}</div>
+  <div class="card"><h2>Historial</h2>${list.length?list.map(i=>`<div class="it"><div><div>${esc(i.entity||FUND[i.fund].n)}</div><div class="m">${esc(i.date)} · ${esc(i.bank||'Sin entidad')}${i.notes?' · '+esc(i.notes):''}</div><span class="tag" style="color:${FUND[i.fund].c}">${FUND[i.fund].n}</span></div><div style="text-align:right"><div class="a">${money(i.amount)}</div><button class="btn d" style="margin-top:.5rem" onclick="A.del(${i.id})">Eliminar</button></div></div>`).join(''):'<p style="color:var(--m);font-size:.9rem">Sin registros todavía.</p>'}</div>`}
+
+function vProj(){
+  const g=golden(),pr=project(),mx=Math.max(g,...pr.map(x=>x.b)),last=pr[pr.length-1];
+  return `<div class="card"><h2>Crecimiento proyectado</h2>
+  <div class="chart">${pr.map(x=>`<i style="height:${x.b/mx*100}%" title="Año ${x.y}: ${money(x.b)}"></i>`).join('')}<u style="bottom:${g/mx*100}%"></u></div>
+  <div class="legend"><span>Año 0</span><span>La línea naranja es tu número dorado</span><span>Año ${S.p.years}</span></div></div>
+  <div class="card"><h2>Año por año</h2><table><tr><th>Año</th><th>Aporte mensual</th><th>Patrimonio</th></tr>
+  ${pr.map(x=>`<tr><td>${x.y}</td><td>${money(S.p.contrib*Math.pow(1+S.p.inf/100,Math.max(0,x.y-(x.y?1:0))))}</td><td>${money(x.b)}</td></tr>`).join('')}</table>
+  <p style="color:var(--m);font-size:.85rem;margin-top:1rem;line-height:1.5">Supuestos: rentabilidad ${S.p.ret}% anual, aporte ajustado ${S.p.inf}% cada año. Último año: ${money(last.b)}.</p></div>`}
+
+function vSetup(){const p=S.p;
+  const F=(id,l,v,t='number',extra='')=>`<label>${l}<input id="${id}" type="${t}" value="${esc(v)}" ${extra}></label>`;
+  return `<div class="card"><h2>Tu plan</h2><div class="f">
+  ${F('s_name','Tu nombre',p.name,'text')}${F('s_exp','Gasto mensual (COP)',p.expense)}${F('s_years','Años para el retiro',p.years)}
+  ${F('s_cap','Con lo que empiezas a invertir (COP)',p.capital)}${F('s_con','Aporte mensual (COP)',p.contrib)}
+  ${F('s_ret','Rentabilidad anual (%)',p.ret,'number','step="0.5"')}${F('s_inf','Inflación anual (%)',p.inf,'number','step="0.5"')}
+  ${F('s_mon','Meses de gasto en la reserva de oxígeno (3 a 6)',p.months,'number','min="3" max="6"')}
+  ${F('s_gold','Número dorado del programa (COP, opcional)',p.golden||'')}</div>
+  <div class="note" style="margin-top:1rem">Si ya tienes tu número dorado calculado en Money-Flow, escríbelo en el último campo y la app lo usará en lugar de su cálculo propio.</div>
+  <button class="btn" onclick="A.saveSetup()">Guardar plan</button></div>`}
+
+function vTools(){return `<div class="card"><h2>Respaldo</h2><p style="color:var(--m);font-size:.9rem;line-height:1.5;margin-bottom:1rem">Tus datos ya se guardan en la nube. Descarga un archivo de respaldo por seguridad o para pasar datos de otro lugar.</p>
+  <div class="row"><button class="btn" onclick="A.exp()">Descargar respaldo</button><button class="btn o" onclick="document.getElementById('imp').click()">Cargar respaldo</button><input type="file" id="imp" accept=".json" hidden onchange="A.imp(this)"></div>${msg?`<div class="err">${esc(msg)}</div>`:''}</div>
+  <div class="card"><h2>Cuenta</h2><p style="color:var(--m);font-size:.9rem;margin-bottom:1rem">${esc(auth.currentUser?.email||'')}</p><button class="btn o" onclick="A.out()">Cerrar sesión</button></div>`}
+
+function render(){
+  const app=document.getElementById('app');
+  if(view==='login'||!S){app.innerHTML=`<div class="login"><h1>Money<span style="color:var(--g)">-Flow</span></h1><p>Tu plan de ahorro e inversión para el retiro, sincronizado en todos tus dispositivos.</p><button class="btn" onclick="A.login()" ${ready?'':'disabled'}>${ready?'Continuar con Google':'Cargando…'}</button>${msg?`<div class="err">${esc(msg)}</div>`:''}</div>`;return}
+  const tabs=[['home','Resumen'],['inv','Aportes'],['proj','Proyección'],['setup','Mi plan'],['tools','Respaldo']];
+  const body={home:vHome,inv:vInv,proj:vProj,setup:vSetup,tools:vTools}[view]();
+  app.innerHTML=`<div class="top"><div class="logo">Money<i>-Flow</i>${S.p.name?' · '+esc(S.p.name):''}</div><div class="sync"><b>●</b> Sincronizado</div></div><nav>${tabs.map(t=>`<button class="${view===t[0]?'on':''}" onclick="A.go('${t[0]}')">${t[1]}</button>`).join('')}</nav>${body}`;
+}
+
+window.A={
+  go(v){view=v;msg='';render();window.scrollTo(0,0)},
+  async login(){msg='';try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){msg=e.code==='auth/unauthorized-domain'?'Falta autorizar este dominio en Firebase (Authentication, Configuración, Dominios autorizados).':'No se pudo iniciar sesión: '+(e.code||e.message);render()}},
+  out(){signOut(auth)},
+  add(){const a=num('a'),f=val('f'),d=val('d');if(!(a>0)||!d){msg='Escribe la fecha y un monto mayor que cero.';render();return}
+    msg='';S.inv.push({id:Date.now(),date:d,fund:f,bank:val('b'),entity:val('e'),amount:a,notes:val('n')});save();render()},
+  del(id){if(confirm('¿Eliminar este aporte?')){S.inv=S.inv.filter(i=>i.id!==id);save();render()}},
+  saveSetup(){S.p={name:val('s_name'),expense:num('s_exp'),years:Math.max(1,num('s_years')),capital:num('s_cap'),contrib:num('s_con'),ret:num('s_ret'),inf:num('s_inf'),months:Math.min(6,Math.max(3,num('s_mon')||6)),golden:num('s_gold')};S.ready=true;save();view='home';render()},
+  exp(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='moneyflow-respaldo-'+new Date().toISOString().slice(0,10)+'.json';a.click()},
+  imp(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.p||!Array.isArray(d.inv))throw 0;if(!confirm('Esto reemplazará los datos actuales por los del archivo. ¿Continuar?'))return;S={p:{...DEF,...d.p},inv:d.inv,ready:true};save();view='home';render()}catch(e){msg='El archivo no es un respaldo válido de Money-Flow.';render()}};r.readAsText(f)}
+};
+
+onAuthStateChanged(auth,u=>{
+  ready=true;if(unsub){unsub();unsub=null}
+  if(!u){S=null;ref=null;view='login';render();return}
+  ref=doc(db,'users',u.uid,'app','main');
+  unsub=onSnapshot(ref,snap=>{
+    if(snap.metadata.hasPendingWrites&&S)return;
+    if(snap.exists()){S=snap.data();S.p={...DEF,...S.p};S.inv=S.inv||[];if(view==='login')view=S.ready?'home':'setup'}
+    else{S=legacy()||{p:{...DEF},inv:[],ready:false};save();view=S.ready?'home':'setup'}
+    render();
+  },e=>{msg='No se pudo leer tu información: '+e.message;render()});
+});
+render();
+</script>
+</body>
+</html>
